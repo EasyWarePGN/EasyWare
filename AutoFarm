@@ -1,0 +1,35 @@
+local attackInterval = 1
+local enemyName = "Melee"
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:FindFirstChildOfClass("Humanoid")
+local workspace = game:GetService("Workspace")
+
+local function attackEnemies()
+    if not character or not humanoid then
+        return
+    end
+
+    for _, enemy in pairs(workspace:FindObjectsOfType("Model")) do
+        if enemy:FindFirstChildOfClass("Humanoid") and enemy.Name == enemyName then
+            local primaryPart = enemy.PrimaryPart
+            
+            if primaryPart then
+                character.HumanoidRootPart.CFrame = primaryPart.CFrame
+                
+                local clickDetector = primaryPart:FindFirstChildOfClass("ClickDetector")
+                if clickDetector then
+                    clickDetector:Fire()
+                end
+                
+                wait(attackInterval)
+            end
+        end
+    end
+end
+
+while true do
+    attackEnemies()
+    wait(attackInterval)
+end
